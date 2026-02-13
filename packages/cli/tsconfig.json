@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "composite": true,
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    { "path": "../core" },
+    { "path": "../rules" },
+    { "path": "../adapters-openai" },
+    { "path": "../reporter" }
+  ],
+  "include": ["src/**/*.ts"],
+  "exclude": ["dist", "src/**/*.test.ts"]
+}

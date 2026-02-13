@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://guardforge.dev/schemas/guardforge.schema.json",
+  "title": "GuardForge Config",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "project",
+    "adapter",
+    "models",
+    "policies",
+    "suites",
+    "reporters",
+    "thresholds",
+    "ci"
+  ],
+  "properties": {
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "version"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "version": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" }
+      }
+    },
+    "adapter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "implementation"],
+      "properties": {
+        "provider": { "type": "string", "enum": ["openai"] },
+        "implementation": { "type": "string", "minLength": 1 },
+        "timeoutMs": { "type": "integer", "minimum": 1 },
+        "retries": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "models": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["primary", "judge"],
+      "properties": {
+        "primary": { "$ref": "#/$defs/model" },
+        "judge": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["enabled", "id"],
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "id": { "type": "string", "minLength": 1 },
+            "temperature": { "type": "number", "minimum": 0, "maximum": 2 },
+            "maxOutputTokens": { "type": "integer", "minimum": 1 }
+          }
+        }
+      }
+    },
+    "policies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["refusal", "forbiddenOutputs", "tools"],
+      "properties": {
+        "refusal": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["requiredPhrases", "minMatches", "semantic"],
+          "properties": {
+            "requiredPhrases": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "minItems": 1
+            },
+            "minMatches": { "type": "integer", "minimum": 1 },
+            "semantic": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["denyPhrases", "alternativeHelpPhrases"],
+              "properties": {
+                "denyPhrases": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 1 },
+                  "minItems": 1
+                },
+                "alternativeHelpPhrases": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 1 },
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        },
+        "forbiddenOutputs": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["patterns", "semantic"],
+          "properties": {
+            "patterns": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "minItems": 1
+            },
+            "semantic": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "credentialAssignmentPatterns",
+                "credentialPrefixPatterns",
+                "benignContextPatterns"
+              ],
+              "properties": {
+                "credentialAssignmentPatterns": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 1 },
+                  "minItems": 1
+                },
+                "credentialPrefixPatterns": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 1 },
+                  "minItems": 1
+                },
+                "benignContextPatterns": {
+                  "type": "array",
+                  "items": { "type": "string", "minLength": 1 },
+                  "minItems": 1
+                }
+              }
+            }
+          }
+        },
+        "tools": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mode", "allowlist"],
+          "properties": {
+            "mode": { "type": "string", "enum": ["deny_by_default"] },
+            "allowlist": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 },
+              "uniqueItems": true
+            },
+            "argumentSchemas": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      }
+    },
+    "suites": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/suite" }
+    },
+    "reporters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outputs"],
+      "properties": {
+        "outputs": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["format", "path"],
+            "properties": {
+              "format": { "type": "string", "enum": ["json", "junit", "html"] },
+              "path": { "type": "string", "minLength": 1 },
+              "optional": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    },
+    "thresholds": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["failOnSeverities", "maxAllowedBySeverity"],
+      "properties": {
+        "failOnSeverities": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/severity" },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "maxAllowedBySeverity": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "critical": { "type": "integer", "minimum": 0 },
+            "high": { "type": "integer", "minimum": 0 },
+            "medium": { "type": "integer", "minimum": 0 },
+            "low": { "type": "integer", "minimum": 0 },
+            "info": { "type": "integer", "minimum": 0 }
+          }
+        }
+      }
+    },
+    "ci": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["requiredSteps", "publishArtifacts", "failOnThresholdBreach"],
+      "properties": {
+        "requiredSteps": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "minItems": 1
+        },
+        "publishArtifacts": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["json", "junit", "html"] },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "optionalArtifacts": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["json", "junit", "html"] },
+          "uniqueItems": true
+        },
+        "failOnThresholdBreach": { "type": "boolean" }
+      }
+    }
+  },
+  "$defs": {
+    "model": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "temperature": { "type": "number", "minimum": 0, "maximum": 2 },
+        "maxOutputTokens": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "severity": {
+      "type": "string",
+      "enum": ["critical", "high", "medium", "low", "info"]
+    },
+    "suite": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "cases"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "description": { "type": "string" },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "uniqueItems": true
+        },
+        "cases": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/case" }
+        }
+      }
+    },
+    "case": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "severity", "prompt", "expected"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "severity": { "$ref": "#/$defs/severity" },
+        "system": { "type": "string" },
+        "prompt": { "type": "string", "minLength": 1 },
+        "context": {
+          "type": "array",
+          "items": {}
+        },
+        "expected": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "mustRefuse": { "type": "boolean" },
+            "forbiddenPatternsAbsent": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            },
+            "allowedToolsOnly": { "type": "boolean" },
+            "refusalMode": {
+              "type": "string",
+              "enum": ["exact_phrase", "semantic"]
+            },
+            "forbiddenPatternMode": {
+              "type": "string",
+              "enum": ["raw_regex", "leakage_semantic"]
+            },
+            "allowedBenignMentions": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        }
+      }
+    }
+  }
+}

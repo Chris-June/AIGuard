@@ -1,0 +1,23 @@
+site_name: GuardForge Docs
+site_description: Beginner-friendly GuardForge docs for safe AI guardrail testing.
+repo_url: https://github.com/Chris-June/AIGuard
+repo_name: AIGuard
+exclude_docs: README.md
+theme:
+  name: material
+nav:
+  - Start Here: index.md
+  - What Is GuardForge: 01-what-is-guardforge.md
+  - Quickstart: 02-quickstart-5-minutes.md
+  - First Safety Test: 03-your-first-safety-test.md
+  - Prompts and Guardrails: 04-understanding-prompts-and-guardrails.md
+  - Reading Results: 05-reading-your-results.md
+  - Safety Curriculum: 06-safety-curriculum.md
+  - Common Workflows: 07-common-workflows.md
+  - Troubleshooting: 08-troubleshooting.md
+  - Recipes: 09-recipes.md
+  - Glossary: 10-glossary.md
+  - FAQ: 11-faq.md
+  - Safe Usage Checklist: 12-safe-usage-checklist.md
+  - Docs QA Matrix: 13-docs-qa-matrix.md
+  - Release Runbook: 14-release-runbook.md

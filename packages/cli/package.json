@@ -1,0 +1,49 @@
+{
+  "name": "@chrisjune/guardforge",
+  "version": "0.1.0",
+  "description": "GuardForge CLI for testing AI safety guardrails in local and CI workflows.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Chris-June/AIGuard.git"
+  },
+  "homepage": "https://github.com/Chris-June/AIGuard",
+  "bugs": {
+    "url": "https://github.com/Chris-June/AIGuard/issues"
+  },
+  "keywords": [
+    "ai",
+    "guardrails",
+    "security",
+    "prompt-injection",
+    "cli",
+    "testing"
+  ],
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "bin": {
+    "guardforge": "dist/bin.js"
+  },
+  "scripts": {
+    "build": "pnpm exec tsup",
+    "typecheck": "tsc -b --pretty false",
+    "cli": "tsx src/bin.ts",
+    "pack:check": "npm pack --dry-run"
+  },
+  "devDependencies": {
+    "@guardforge/adapters-openai": "workspace:*",
+    "@guardforge/core": "workspace:*",
+    "@guardforge/reporter": "workspace:*",
+    "@guardforge/rules": "workspace:*"
+  },
+  "dependencies": {
+    "commander": "^13.1.0",
+    "openai": "^4.83.0"
+  }
+}

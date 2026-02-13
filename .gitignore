@@ -1,0 +1,17 @@
+node_modules
+.pnpm-store
+.DS_Store
+
+dist
+*.tsbuildinfo
+
+# GuardForge run outputs
+artifacts
+
+# Local scratch/temp files
+.tmp-*
+.tmp-reports
+.tmp-docs-venv
+
+# MkDocs build output (do not commit)
+site

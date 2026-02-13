@@ -1,0 +1,10 @@
+{
+  "files": [],
+  "references": [
+    { "path": "packages/core" },
+    { "path": "packages/rules" },
+    { "path": "packages/adapters-openai" },
+    { "path": "packages/reporter" },
+    { "path": "packages/cli" }
+  ]
+}
