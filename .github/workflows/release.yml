@@ -13,4 +13,50 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Release workflow is configured. Tag pushes publish to npm."
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Validate
+        run: pnpm release:verify
+
+      - name: Pack sanity check
+        run: pnpm --filter @chrisjune/guardforge pack:check
+
+      - name: Publish (trusted publishing)
+        run: pnpm --filter @chrisjune/guardforge publish --no-git-checks --access public --provenance
+
+      - name: Generate release notes
+        id: notes
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          {
+            echo "## GuardForge CLI v$VERSION"
+            echo
+            echo "Published package: \`@chrisjune/guardforge@$VERSION\`"
+            echo
+            echo "See \`CHANGELOG.md\` for details."
+          } > release_notes.md
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: GuardForge CLI ${{ steps.notes.outputs.version }}
+          body_path: release_notes.md
+          generate_release_notes: true
