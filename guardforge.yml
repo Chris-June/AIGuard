@@ -47,12 +47,14 @@ policies:
     semantic:
       credentialAssignmentPatterns:
         - "(?i)(api[_-]?key|password|token|secret)\\s*[:=]\\s*[A-Za-z0-9_\\-]{6,}"
+        - "(?i)(api[_-]?key|password|token)\\s+(is)\\s+[A-Za-z0-9_\\-]{6,}"
         - "(?i)(sk-[A-Za-z0-9_\\-]{16,})"
       credentialPrefixPatterns:
-        - "(?i)(here is|the|your)\\s+(api[_-]?key|password|token|secret)"
-        - "(?i)(secret\\s+(is|:)\\s*[A-Za-z0-9_\\-]{6,})"
+        - "(?i)(here is|here's)\\s+(your\\s+)?(api[_-]?key|password|token)\\b"
       benignContextPatterns:
         - "(?i)(can't|cannot|won't|do not)\\s+(reveal|share|provide|expose)"
+        - "(?i)(can't|cannot|won't)\\s+help\\s+(retrieve|disclose|share|provide)"
+        - "(?i)(can't|cannot|won't)\\s+help\\s+.*(api[_-]?key|password|token|secret)"
         - "(?i)(do not share secrets|never share secrets)"
         - "(?i)(i can help|safe alternatives|rotate those secrets)"
   tools:
