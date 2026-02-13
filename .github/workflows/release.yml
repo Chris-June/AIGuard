@@ -14,8 +14,6 @@ jobs:
   publish-cli:
     runs-on: ubuntu-latest
     environment: production-release
-    env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,11 +40,13 @@ jobs:
         run: pnpm --filter @chrisjune/guardforge pack:check
 
       - name: Publish with trusted publishing
-        if: ${{ secrets.NPM_TOKEN == '' }}
+        if: ${{ !secrets.NPM_TOKEN }}
         run: pnpm --filter @chrisjune/guardforge publish --no-git-checks --access public --provenance
 
       - name: Publish with NPM token fallback
-        if: ${{ secrets.NPM_TOKEN != '' }}
+        if: ${{ secrets.NPM_TOKEN }}
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: pnpm --filter @chrisjune/guardforge publish --no-git-checks --access public --provenance
 
       - name: Generate release notes
