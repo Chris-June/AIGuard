@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Chris-June/AIGuard.git"
+    "url": "git+https://github.com/Chris-June/AIGuard.git"
   },
   "homepage": "https://github.com/Chris-June/AIGuard",
   "bugs": {
@@ -24,8 +24,7 @@
     "dist"
   ],
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "bin": {
     "guardforge": "dist/bin.js"
